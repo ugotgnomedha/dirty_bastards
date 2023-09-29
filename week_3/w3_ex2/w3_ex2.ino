@@ -1,7 +1,7 @@
 #include <LiquidCrystal.h>
 
-LiquidCrystal lcd(9, 8, 5, 4, 3, 2); // (RS, E, D4, D5, D6, D7)
-LiquidCrystal lcd2(13, 12, 11, 10, 7, 6); // Second LCD (change pin numbers accordingly)
+LiquidCrystal lcd(25, 27, 5, 4, 3, 2); // (RS, E, D4, D5, D6, D7)
+//LiquidCrystal lcd2(13, 12, 11, 10, 7, 6); // Second LCD (change pin numbers accordingly)
 
 int buttonPin = 19; // Button connected to digital pin 19
 int buttonState = LOW;
@@ -21,11 +21,11 @@ bool isGroupNameVisible = true; // Track if "Group Name:" is visible or not
 // GROUP NAME RELATED </>
 
 // LED SWITCHES <>
-const int potBrightnessPin = A4;  // Potentiometer for brightness control
-const int potDirectionPin = A5;   // Potentiometer for direction control
-const int led1Pin = 44;            // PWM-capable pin for LED 1
-const int led2Pin = 46;           // PWM-capable pin for LED 2
-bool ledStatus = true;
+//const int potBrightnessPin = A4;  // Potentiometer for brightness control
+//const int potDirectionPin = A5;   // Potentiometer for direction control
+//const int led1Pin = 44;            // PWM-capable pin for LED 1
+////const int led2Pin = 46;           // PWM-capable pin for LED 2
+//bool ledStatus = true;
 // LED SWITCHES </>
 
 void setup() {
@@ -37,14 +37,14 @@ void setup() {
 
   // GROUP NAME RELATED <>
   // Initialize the second LCD
-  lcd2.begin(16, 2); // Change these values according to your LCD configuration
+  //lcd2.begin(16, 2); // Change these values according to your LCD configuration
 
   // Start the scrolling and blinking for the group name display
-  lcd2.setCursor(0, 0);
-  lcd2.print("Group Name:");
+//  lcd2.setCursor(0, 0);
+//  lcd2.print("Group Name:");
 
-  lcd2.setCursor(0, 1);
-  lcd2.print("                    "); // Clear the second line initially
+//  lcd2.setCursor(0, 1);
+//  lcd2.print("                    "); // Clear the second line initially
   // GROUP NAME RELATED </>
 
   // Set up ADC for reading analog values
@@ -54,86 +54,86 @@ void setup() {
   pinMode(buttonPin, INPUT_PULLUP);
 
 // LED SWITCHES <>
-  pinMode(led1Pin, OUTPUT);
-  pinMode(led2Pin, OUTPUT);
+//  pinMode(led1Pin, OUTPUT);
+  //pinMode(led2Pin, OUTPUT);
 // LED SWITCHES </>
 
   Serial.begin(9600);
 }
 
 // GROUP NAME RELATED <>
-void scrollGroupName() {
-  static int textPosition = 0;
-  int groupNameLength = strlen("Dirty Bastards ");
-  lcd2.setCursor(0, 1);
-  lcd2.print("                    "); // Clear the entire second row
+//void scrollGroupName() {
+//  static int textPosition = 0;
+//  int groupNameLength = strlen("Dirty Bastards ");
+//  lcd2.setCursor(0, 1);
+//  lcd2.print("                    "); // Clear the entire second row
+//
+//  for (int i = 0; i < 16; i++) {
+//    int charIndex = (textPosition + i) % groupNameLength;
+//    lcd2.setCursor(i, 1);
+//    lcd2.print("Dirty Bastards "[charIndex]);
+//  }
+//
+//  textPosition = (textPosition + 1) % groupNameLength;
+//}
 
-  for (int i = 0; i < 16; i++) {
-    int charIndex = (textPosition + i) % groupNameLength;
-    lcd2.setCursor(i, 1);
-    lcd2.print("Dirty Bastards "[charIndex]);
-  }
-
-  textPosition = (textPosition + 1) % groupNameLength;
-}
-
-void blinkGroupName() {
-  if (isGroupNameVisible) {
-    lcd2.setCursor(0, 0);
-    lcd2.print("                    "); // Clear the entire first row
-  } else {
-    lcd2.setCursor(0, 0);
-    lcd2.print("Group Name:");
-  }
-
-  isGroupNameVisible = !isGroupNameVisible;
-}
+//void blinkGroupName() {
+//  if (isGroupNameVisible) {
+//    lcd2.setCursor(0, 0);
+//    lcd2.print("                    "); // Clear the entire first row
+//  } else {
+//    lcd2.setCursor(0, 0);
+//    lcd2.print("Group Name:");
+//  }
+//
+//  isGroupNameVisible = !isGroupNameVisible;
+//}
 // GROUP NAME RELATED </>
 
 // LED SWITCHES <>
-void ledSwitches(){
-  int brightnessValue = analogRead(potBrightnessPin);
-  int directionValue = analogRead(potDirectionPin);
-
-  int mappedBrightness = map(brightnessValue, 0, 1023, 0, 1023);
-
-  bool isDirectionPositive = directionValue > 512;
-
-  int led1Brightness, led2Brightness;
-
-  if (isDirectionPositive) {
-    led1Brightness = 1023 - mappedBrightness;
-    led2Brightness = mappedBrightness;
-  } else {
-    led1Brightness = mappedBrightness;
-    led2Brightness = 1023 - mappedBrightness;
-  }
-  
-  analogWrite(led1Pin, map(led1Brightness, 0, 1023, 0, 255));
-  analogWrite(led2Pin, map(led2Brightness, 0, 1023, 0, 255));
-}
+//void ledSwitches(){
+//  int brightnessValue = analogRead(potBrightnessPin);
+//  int directionValue = analogRead(potDirectionPin);
+//
+//  int mappedBrightness = map(brightnessValue, 0, 1023, 0, 1023);
+//
+//  bool isDirectionPositive = directionValue > 512;
+//
+//  int led1Brightness, led2Brightness;
+//
+//  if (isDirectionPositive) {
+//    led1Brightness = 1023 - mappedBrightness;
+//    //led2Brightness = mappedBrightness;
+//  } else {
+//    led1Brightness = mappedBrightness;
+//    //led2Brightness = 1023 - mappedBrightness;
+//  }
+//  
+//  //analogWrite(led1Pin, map(led1Brightness, 0, 1023, 0, 255));
+//  //analogWrite(led2Pin, map(led2Brightness, 0, 1023, 0, 255));
+//}
 // LED SWITCHES </>
 
 void loop() {
   // LED SWITCHES <>
-  if(ledStatus == true){
-    ledSwitches();
-  }
+//  if(ledStatus == true){
+//    ledSwitches();
+//  }
   // LED SWITCHES </>
   
   // GROUP NAME RELATED <>
   // Check and update the scrolling text
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillisScroll >= scrollInterval) {
-    previousMillisScroll = currentMillis;
-    scrollGroupName();
-  }
+//  if (currentMillis - previousMillisScroll >= scrollInterval) {
+//    previousMillisScroll = currentMillis;
+//    scrollGroupName();
+//  }
 
   // Check and update the blinking text
-  if (currentMillis - previousMillisBlink >= blinkInterval) {
-    previousMillisBlink = currentMillis;
-    blinkGroupName();
-  }
+//  if (currentMillis - previousMillisBlink >= blinkInterval) {
+//    previousMillisBlink = currentMillis;
+//    blinkGroupName();
+//  }
   // GROUP NAME RELATED </>
   
   int xValue = analogRead(A8); // Connect X output of the joystick to A8
@@ -176,14 +176,14 @@ void loop() {
       if (buttonState == LOW) {
         buttonPressCount++;
 
-        if(ledStatus == false){
-          ledStatus = true;
-        } else {
-          ledStatus = false;
-           // Turn off the LEDs when the button is pressed
-          analogWrite(led1Pin, 0);
-          analogWrite(led2Pin, 0);  
-        }
+//        if(ledStatus == false){
+//          ledStatus = true;
+//        } else {
+//          ledStatus = false;
+//           // Turn off the LEDs when the button is pressed
+//          //analogWrite(led1Pin, 0);
+//          //analogWrite(led2Pin, 0);  
+//        }
       }
     }
   }
