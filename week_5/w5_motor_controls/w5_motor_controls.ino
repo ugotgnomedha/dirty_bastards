@@ -1,4 +1,5 @@
 #include <LiquidCrystal.h>
+#include <SoftwareSerial.h>
 
 #define Motor_forward         0
 #define Motor_return          1
@@ -8,6 +9,8 @@
 #define Motor_R_pwm_pin       10
 
 LiquidCrystal lcd(25, 27, 5, 4, 3, 2); // (RS, E, D4, D5, D6, D7)
+SoftwareSerial espSerial(2, 3); // SoftwareSerial for communication with the ESP8266
+
 int buttonPin = 19; // Button connected to digital pin 19
 int buttonState = LOW;
 int lastButtonState = LOW;
@@ -27,7 +30,11 @@ void setup() {
   // Initialize the button pin
   pinMode(buttonPin, INPUT_PULLUP);
 
-//  Serial.begin(9600);
+  // Initialize SoftwareSerial for ESP8266 communication
+  espSerial.begin(115200);
+
+  // Initialize Serial for debugging
+  Serial.begin(115200);
 }
 
 void loop() {
@@ -37,16 +44,16 @@ void loop() {
   // Calculate joystick percentages
   int xPercentage = map(xValue, 0, 1023, -100, 100);
   int yPercentage = map(yValue, 0, 1023, -100, 100);
-  
+
   // Display joystick values on the LCD
   lcd.setCursor(12, 0);
   lcd.print(xPercentage);
   lcd.print("%  ");
-  
+
   lcd.setCursor(0, 1);
   lcd.print(yPercentage);
   lcd.print("%  ");
-  
+
   lcd.setCursor(0, 2);
   lcd.print("                    "); // Clear the entire row
   lcd.setCursor(0, 2);
@@ -76,11 +83,6 @@ void loop() {
   }
 
   lastButtonState = reading;
-
-  // Print button press count on the last row of the LCD
-  lcd.setCursor(0, 3);
-  lcd.print("Button Presses: ");
-  lcd.print(buttonPressCount);
 
   // Motor control logic based on joystick values
   int pwm_R = 0;
@@ -116,10 +118,16 @@ void loop() {
   analogWrite(Motor_R_pwm_pin, abs(pwm_R));
 
   // Print motor PWM values to Serial Monitor
-//  Serial.print(" LeftPWM: ");
-//  Serial.print(abs(pwm_L));
-//  Serial.print(" RightPWM: ");
-//  Serial.println(abs(pwm_R));
+  Serial.print("L:");
+  Serial.print(abs(pwm_L));
+  Serial.print(",R:");
+  Serial.println(abs(pwm_R));
+
+  // Send motor values to the ESP8266
+  espSerial.print("L:");
+  espSerial.print(abs(pwm_L));
+  espSerial.print(",R:");
+  espSerial.println(abs(pwm_R));
 
   delay(20);
 }

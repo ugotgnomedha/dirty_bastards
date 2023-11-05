@@ -1,14 +1,13 @@
-#include<SPI.h>
-
-char buff[]="Hello Slave\n";
-
 void setup() {
-   Serial.begin(9600);   /* begin serial with 9600 baud */
-  SPI.begin();        /* begin SPI */
+  Serial.begin(9600); // Initialize the serial communication at 9600 bps
 }
 
 void loop() {
-  for(int i=0; i<sizeof buff; i++)  /* transfer buff data per second */
-  SPI.transfer(buff[i]);
-  delay(1000);  
+  if (Serial.available()) {
+    String data = Serial.readStringUntil('\n'); // Read data from Arduino
+    Serial.print("Received: ");
+    Serial.println(data);
+    
+    // Add your code to process the data here
+  }
 }
