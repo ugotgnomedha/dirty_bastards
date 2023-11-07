@@ -30,7 +30,7 @@ void loop() {
 void handleData() {
   String dataReceived = server.arg("data");
   Serial.println("Received data: " + dataReceived);
-  // Process the received data as needed
-
+  Serial1.println(dataReceived); // Send data to Arduino Mega via Serial1
   server.send(200, "text/plain", "Data received successfully"); // Send a response to the client
 }
+
