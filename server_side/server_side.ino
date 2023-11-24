@@ -11,7 +11,7 @@ void setup() {
 
   WiFi.begin("iPhone_", "gagarin11"); // Replace with your Wi-Fi credentials
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(1000);
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
@@ -19,7 +19,7 @@ void setup() {
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 
-  server.on("/", HTTP_POST, handleData); // Define an endpoint for data reception
+  server.on("/your_endpoint", HTTP_POST, handleData); // Define an endpoint for data reception
   server.begin();
 }
 
@@ -33,4 +33,3 @@ void handleData() {
   Serial1.println(dataReceived); // Send data to Arduino Mega via Serial1
   server.send(200, "text/plain", "Data received successfully"); // Send a response to the client
 }
-

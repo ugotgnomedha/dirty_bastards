@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-const char* serverAddress = "http://172.20.10.3"; // Replace with the IP or domain of your server
+const char* serverAddress = "http://172.20.10.4"; // Replace with the IP or domain of your server
 
 void setup() {
   Serial.begin(115200);
@@ -13,6 +13,7 @@ void setup() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
+  
 }
 
 void loop() {
