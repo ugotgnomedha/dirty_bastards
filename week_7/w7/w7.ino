@@ -8,8 +8,8 @@
 #define Motor_L_pwm_pin       9
 #define Motor_R_pwm_pin       10
 
-LiquidCrystal lcd(25, 27, 5, 4, 3, 2); // (RS, E, D4, D5, D6, D7)
-int buttonPin = 19; // Button connected to digital pin 19
+LiquidCrystal lcd(25, 27, 5, 4, 11, 12); // (RS, E, D4, D5, D6, D7)
+int buttonPin = 15; // Button connected to digital pin 19
 int buttonState = LOW;
 int lastButtonState = LOW;
 unsigned long lastDebounceTime = 0;

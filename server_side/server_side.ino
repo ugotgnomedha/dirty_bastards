@@ -20,6 +20,9 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   server.on("/your_endpoint", HTTP_POST, handleData); // Define an endpoint for data reception
+  server.on("/move", HTTP_POST, handleMove);       // Define an endpoint for the 'move' command
+  server.on("/rotate", HTTP_POST, handleRotate);   // Define an endpoint for the 'rotate' command
+
   server.begin();
 }
 
@@ -32,4 +35,18 @@ void handleData() {
   Serial.println("Received data: " + dataReceived);
   Serial1.println(dataReceived); // Send data to Arduino Mega via Serial1
   server.send(200, "text/plain", "Data received successfully"); // Send a response to the client
+}
+
+void handleMove() {
+  String moveData = server.arg("data");
+  Serial.println("Move command received: " + moveData);
+  Serial1.println(moveData); // Send data to Arduino Mega via Serial1
+  server.send(200, "text/plain", "Move command received successfully"); // Send a response to the client
+}
+
+void handleRotate() {
+  String rotateData = server.arg("data");
+  Serial.println("Rotate command received: " + rotateData);
+  Serial1.println(rotateData); // Send data to Arduino Mega via Serial1
+  server.send(200, "text/plain", "Rotate command received successfully"); // Send a response to the client
 }
