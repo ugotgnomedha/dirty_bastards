@@ -1,6 +1,9 @@
 #include <LiquidCrystal.h>
 #include <Wire.h>
 #include "LIDARLite_v4LED.h"
+#include <Adafruit_Sensor.h>
+#include <Adafruit_TCS34725.h>
+
 
 #define Motor_forward         0
 #define Motor_return          1
@@ -30,6 +33,10 @@ int distanceToMove = 0;
 bool moveForward = true;
 
 LIDARLite_v4LED myLidarLite;
+
+// Create an instance of the TCS34725 sensor
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
+
 
 void leftMotorInterrupt() {
   Serial.println("lefttt");
@@ -69,6 +76,12 @@ void setup() {
 
   // Lidar setup
   myLidarLite.configure(0);
+
+  // Initialize the sensor
+  if (!tcs.begin()) {
+    Serial.println("Could not find a valid TCS34725 sensor, check wiring!");
+    while (1);
+  }
 }
 
 String getDirection(int bearing) {
@@ -135,9 +148,9 @@ void handleButtonPress() {
 
   lastButtonState = reading;
 
-  lcd.setCursor(0, 0);
-  lcd.print("Button Presses: ");
-  lcd.print(buttonPressCount);
+//  lcd.setCursor(0, 0);
+//  lcd.print("Button Presses: ");
+//  lcd.print(buttonPressCount);
 }
 
 void handleJoystickData(String data) {
@@ -187,8 +200,50 @@ void printDistance() {
   Serial.println(" cm");
 }
 
+unsigned long previousMillis = 0;
+const long interval_color = 1000;  // Check color every 1 second
+
+String recognizeColor(uint16_t red, uint16_t green, uint16_t blue) {
+  Serial.println(red);
+  Serial.println(green);
+  Serial.println(blue);
+  lcd.setCursor(0, 0);
+  lcd.print("                   ");
+  lcd.setCursor(0, 0);
+
+  if(red > green && red > blue){
+   lcd.print ("red");
+   return "red";
+  }
+  if(green > red && green > blue){
+    lcd.print ("green");
+    return "green";
+  }
+  if(blue > red && blue > green){
+   lcd.print ("blue");
+   return "blue";
+  }
+}
+
+
 void loop() {
   unsigned long currentMillis = millis();
+
+  // Check color every 'interval' milliseconds
+  if (currentMillis - previousMillis >= interval_color) {
+    previousMillis = currentMillis;
+
+    // Read the RGB color values from the sensor
+    uint16_t r, g, b, c;
+    tcs.getRawData(&r, &g, &b, &c);
+
+    // Determine the color based on the RGB values
+    String detectedColor = recognizeColor(r, g, b);
+
+    // Print the detected color to the serial monitor
+    Serial.println(detectedColor);
+  }
+  
   if (currentMillis - lastCompassUpdate >= compassInterval) {
     directionsCompass();
     lastCompassUpdate = currentMillis;
@@ -224,7 +279,7 @@ void loop() {
   uint16_t distance = getLidarDistance();
   Serial.println("Distance: " + String(distance) + " cm");
   lcd.setCursor(0, 2);
-  lcd.print("                ");
+  lcd.print("                   ");
   lcd.setCursor(0, 2);
   lcd.print("Dist. lidar: ");
   lcd.print(distance);
@@ -232,6 +287,7 @@ void loop() {
 
 void handleRotateCommand(String data) {
   int targetAngle_deg;
+  Serial.println(data);
   if (sscanf(data.c_str(), "Rotate command received: rotate:%ddeg", &targetAngle_deg) == 1) {
     int currentBearing = getCurrentBearing();
     int targetBearing = (currentBearing + targetAngle_deg + 360) % 360;
