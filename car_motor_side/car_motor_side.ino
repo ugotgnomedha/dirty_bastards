@@ -283,6 +283,17 @@ void loop() {
   lcd.setCursor(0, 2);
   lcd.print("Dist. lidar: ");
   lcd.print(distance);
+
+  // Testing lidar, remove me later!
+  moveLidarTest((int) distance);
+}
+
+void moveLidarTest(int distance){
+  if(distance > 20){
+    moveForward = false;
+    moveCar(5); // move forward
+    Serial.println("moving forward!!!");
+  }
 }
 
 void handleRotateCommand(String data) {
@@ -396,9 +407,9 @@ void serialCommunication(String message) {
   
 }
 
-void moveCar(int distance) {
+void moveCar(int distance) { // distance in cm.
   // Calculate the time required to move the specified distance (adjust as needed)
-  unsigned long moveTime = distance * 100; // 10 milliseconds per centimeter, adjust this value based on your motor and robot configuration
+  unsigned long moveTime = distance * 100; // 100 milliseconds per centimeter, adjust this value based on your motor and robot configuration
 
   // Set the motor speeds
   int motorSpeed = 255; // Adjust the speed as needed
