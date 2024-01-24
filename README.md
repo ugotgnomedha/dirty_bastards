@@ -5,21 +5,21 @@ Dirsty idiots
 ### Move forward/backward:
 
 #### Request:
-'''bash
+```console
 curl -X POST http://172.20.10.4/move -d "data=move:dist:10cm"
-'''
+```
 #### Responce:
-'''bash
+```console
 Move command received successfully
-'''
+```
 
 ### Rotate:
 
 #### Request:
-'''bash
+```console
 curl -X POST http://172.20.10.4/rotate -d "data=rotate:-40deg"
-'''
+```
 #### Responce:
-'''bash
+```console
 Rotate command received successfull
-'''
+```
