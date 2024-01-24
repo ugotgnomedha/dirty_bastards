@@ -186,10 +186,10 @@ void printDistance() {
   float rightDistance = (rightPulses * 3.14159265358979323846 * wheelDiameter) / 360.0;
   float totalDistance = (leftDistance + rightDistance) / 2.0;
 
-  lcd.setCursor(0, 3);
-  lcd.print("Dist. motor: ");
-  lcd.print(totalDistance, 2);
-  lcd.print(" cm");
+//  lcd.setCursor(0, 3);
+//  lcd.print("Dist. motor: ");
+//  lcd.print(totalDistance, 2);
+//  lcd.print(" cm");
 
   Serial.print("L:");
   Serial.print(leftPulses);
@@ -283,6 +283,43 @@ void loop() {
   lcd.setCursor(0, 2);
   lcd.print("Dist. lidar: ");
   lcd.print(distance);
+  
+  // Testing lidar, remove me later!
+  moveLidarTest((int) distance);
+}
+
+int firstDistance = 0;  // Variable to store the first lidar reading
+
+int getPotentiometerValue(){
+  // Read the analog value from the potentiometer
+  int analogValue = analogRead(A15);
+
+  // Map the analog value to the desired range [0, 30]
+  int mappedValue = map(analogValue, 0, 1023, 20, 40);
+  return mappedValue;
+}
+
+void moveLidarTest(int distance){
+  if (firstDistance == 0){
+    firstDistance = distance;
+  }
+  int distanceTraveled = distance - firstDistance;
+  distanceTraveled = abs(distanceTraveled);
+//  Serial.println(firstDistance);
+//  Serial.println(distance);
+//  Serial.println(distanceTraveled);
+  lcd.setCursor(0, 3);
+  lcd.print("                ");
+  lcd.setCursor(0, 3);
+  lcd.print("Dist. trav.: ");
+  lcd.print(distanceTraveled);
+//  lcd.print(" cm");
+
+  Serial.println(getPotentiometerValue());
+  if(distance > getPotentiometerValue()){
+    moveForward = false;
+    moveCar(3); // move forward
+  }
 }
 
 void handleRotateCommand(String data) {
