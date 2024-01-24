@@ -299,6 +299,8 @@ int getPotentiometerValue(){
   return mappedValue;
 }
 
+bool rotate = false;
+
 void moveLidarTest(int distance){
   if (firstDistance == 0){
     firstDistance = distance;
@@ -319,6 +321,15 @@ void moveLidarTest(int distance){
   if(distance > getPotentiometerValue()){
     moveForward = false;
     moveCar(3); // move forward
+  } else {
+    if(rotate != true){
+      int currentBearing = getCurrentBearing(); // rotate 90 degrees.
+      int targetBearing = (currentBearing + 80 + 360) % 360;
+      Serial.println(currentBearing);
+      Serial.println(targetBearing);
+      rotateTo(targetBearing);
+      rotate = true;
+    }
   }
 }
 
