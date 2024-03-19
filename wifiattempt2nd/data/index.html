@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Dirty Bastards</title>
+</head>
+<body>
+    <h1>Dirty Bastards</h1>
+    <div class="textbox">
+        <div id="lidarBar">
+            <div id="lidarFill"></div>
+        </div>
+        <div id="lidarStuff">
+            <label for="lidarDistance">LIDAR Stop Distance:</label>
+            <input type="text" id="lidarDistance">
+            <button id="sendLidar">Send Lidar Distance</button>
+        </div>
+    </div>
+
+    <div class="textbox1">
+        <div id="compass">
+        <div id="pin"></div>
+        <div id="directionalMarkers">
+            <div class="directionalMarker north">N(0)</div>
+            <div class="directionalMarker east">E(90)</div>
+            <div class="directionalMarker west">W(270)</div>
+            <div class="directionalMarker south">S(180)</div>
+        </div>
+        </div>
+        <div id="compassStuff">
+            <label for="compassValue">Compass Value:</label>
+            <input type="text" id="compassValue">
+            <button id="sendCompass">Send Compass Value</button>
+        </div>
+    </div>
+    <div class="textbox3">
+        <label for="moveValue">Move Distance:</label>
+        <input type="text" id="moveValue">
+        <button id="sendMoveDistance">Send Move Distance</button>
+    </div>
+    <div class="textbox2">
+        <label for="distanceMoved">Distance Moved:</label>
+        <input type="text" id="distanceMovedText" readonly>
+        <button onclick="getDistanceMoved()">Get Distance</button>
+    </div>
+
+
+    <span class="sensor-labels">Distance</span>
+    <span id="Box_lidar_dist">%Dist%</span>
+  <sup class="units">cm</sup>
+
+  <br/>
+
+  <span class="sensor-labels">Direction</span>
+  <span id="Box_comp_dir">%Deg%</span>
+  <sup class="units">o</sup>
+
+  <button id="getDistanceButton">Get Distance</button>
+    <script src="index.js"></script>
+</body>
+</html>
+
+
+
