@@ -142,17 +142,17 @@ void handleJoystickData(String data) {
 }
 
 unsigned long previousMillis = 0;
-const long interval_color = 500;  // Check color every 1 second
+const long interval_color = 2000;  // Check color every N milis
 
 String recognizeColor(uint16_t red, uint16_t green, uint16_t blue, uint16_t clearVal) {
 //  Serial.println("---");
 //  Serial.println(clearVal + red + green + blue);
 //
-//  Serial.println("---");
-//  Serial.println("Clear: " + String(clearVal));
-//  Serial.println("Red: " + String(red));
-//  Serial.println("Green: " + String(green));
-//  Serial.println("Blue: " + String(blue));
+  Serial.println("---");
+  Serial.println("Clear: " + String(clearVal));
+  Serial.println("Red: " + String(red));
+  Serial.println("Green: " + String(green));
+  Serial.println("Blue: " + String(blue));
   
   lcd.setCursor(0, 0);
   lcd.print("                   ");
@@ -160,8 +160,9 @@ String recognizeColor(uint16_t red, uint16_t green, uint16_t blue, uint16_t clea
 
   String color;
 
-  if (clearVal > 2000) {
+  if (clearVal > 1000) {
     lcd.println("White");
+    return "White";
   }
 
   // Determine which color has the highest value
@@ -182,6 +183,11 @@ String recognizeColor(uint16_t red, uint16_t green, uint16_t blue, uint16_t clea
   return color;
 }
 
+bool mazeTaskRun = false;
+String detectedColor = "Unknown";
+unsigned long lastMoveTime = 0;
+const unsigned long moveInterval = 200;
+
 void loop() {
   unsigned long currentMillis = millis();
 
@@ -194,7 +200,7 @@ void loop() {
     tcs.getRawData(&c, &r, &g, &b);
 
     // Determine the color based on the RGB values
-    String detectedColor = recognizeColor(c, r, g, b);
+    detectedColor = recognizeColor(c, r, g, b);
 
     // Print the detected color to the serial monitor
 //    Serial.println(detectedColor);
@@ -208,8 +214,15 @@ void loop() {
 
   String receivedData = readSerial2Line();
   
-//  Serial.println(receivedData);
   processMessage(receivedData);
+
+   unsigned long currentTime = millis();
+  if (mazeTaskRun && (currentTime - lastMoveTime >= moveInterval)) {
+    // Update the last move time
+    lastMoveTime = currentTime;
+    // Run moveInMaze() in a separate thread
+    moveInMaze();
+  }
 
 //  if (receivedData.length() > 2) {
 //    handleJoystickData(receivedData);
@@ -223,9 +236,44 @@ void loop() {
   lcd.setCursor(0, 2);
   lcd.print("Dist. lidar: ");
   lcd.print(distance);
+}
+
+void stopCar() {
+  // Stop the motors
+  digitalWrite(Motor_L_pwm_pin, 0);
+  digitalWrite(Motor_R_pwm_pin, 0);
+}
+
+void moveInMaze(){
+  if (mazeTaskRun) {
+      Serial.println("Maze Runner");
+      Serial.println(detectedColor);
+      if (detectedColor == "White"){
+      // keep moving
+      int motorSpeed = 100;
   
-  // Testing lidar, remove me later!
-//  moveLidarTest((int) distance);
+      digitalWrite(Motor_L_dir_pin, Motor_forward);
+      digitalWrite(Motor_R_dir_pin, Motor_return);
+  
+      analogWrite(Motor_L_pwm_pin, motorSpeed);
+      analogWrite(Motor_R_pwm_pin, motorSpeed);
+      } else if (detectedColor == "Red") {
+        stopCar(); // Stop the car
+        int currentBearing = getCurrentBearing();
+        int bearingDifference = abs(currentBearing + 10);
+        Serial.println(bearingDifference);
+        rotateTo(bearingDifference);  // Rotate -90 degrees
+      } else if (detectedColor == "Blue") {
+        stopCar(); // Stop the car
+        int currentBearing = getCurrentBearing();
+        int bearingDifference = abs(currentBearing - 10);
+        Serial.println(bearingDifference);
+        rotateTo(bearingDifference);  // Rotate 90 degrees
+      } else {
+        // Unknown color - stop moving
+        stopCar();
+      }
+  }
 }
 
 String readSerial2Line() {
@@ -429,11 +477,11 @@ void processMessage(String message) {
       
     } else if (message.startsWith("GET_SENSOR_DATA")) {
       // Get lidar value
-    uint16_t distance = getLidarDistance();
-    // Get compass value
-    int currentBearing = getCurrentBearing();
-    String output = "Lidar reading: " + String(distance) + ", Compass value: " + String(currentBearing);
-    Serial2.println(output);
+      uint16_t distance = getLidarDistance();
+      // Get compass value
+      int currentBearing = getCurrentBearing();
+      String output = "Lidar reading: " + String(distance) + ", Compass value: " + String(currentBearing);
+      Serial2.println(output);
     } else if (message.startsWith("Move distance received:")) {
       // Extract move distance from the message
       int index = message.indexOf(":") + 2;
@@ -446,6 +494,15 @@ void processMessage(String message) {
       String data = message.substring(message.indexOf(":") + 1);
       // Call the function to handle the rotate command
       handleRotateCommand(data);
+    } else if (message.startsWith("START")) {
+      Serial.println("AAA");
+      mazeTaskRun = true;
+      
+//      moveInMaze();
+    } else if (message.startsWith("STOP")) {
+      Serial.println("BBB");
+      mazeTaskRun = false;
+      stopCar();
     } else {
       // Unknown message
       Serial.println("Unknown message: " + message);

@@ -5,7 +5,7 @@ document.getElementById('sendMoveDistance').addEventListener('click', function()
 });
 
 function sendMoveDistance(move) {
-  var url = 'http://172.20.10.6/sendMoveDistance';
+  var url = 'http://172.20.10.3/sendMoveDistance';
   var data = 'move=' + move;
   url = url+'?'+data;
 
@@ -39,7 +39,7 @@ document.getElementById('sendLidar').addEventListener('click', function() {
 // THIS WORKS ______________________________________ ->
 
 function sendLidarDistance(distance) {
-  var url = 'http://172.20.10.6/sendLidarDistance';
+  var url = 'http://172.20.10.3/sendLidarDistance';
   var data = 'distance=' + distance;
   url = url+'?'+data;
 
@@ -80,7 +80,7 @@ function sendLidarDistance(distance) {
 // Function to send rotation value to Arduino
 function sendCompassValue(degrees) {
 
-  var url = 'http://172.20.10.6/sendCompassValue';
+  var url = 'http://172.20.10.3/sendCompassValue';
   var data = 'degrees=' + degrees;
   url = url+'?'+data;
 
@@ -113,12 +113,12 @@ function sendCompassValue(degrees) {
 
 // GET - METHODS ___________________________________________________________________________
 
-setInterval(getSensorData, 500);
+setInterval(getSensorData, 2000);
 
 // Function to retrieve current LIDAR distance and COMPASS degrees from Arduino
 
 function getSensorData() {
-  var url = 'http://172.20.10.6/getSensorData';
+  var url = 'http://172.20.10.3/getSensorData';
 
   var xhttp = new XMLHttpRequest();
 
@@ -170,7 +170,7 @@ document.getElementById("drive").addEventListener('click',function(){
 });
 
 function startDriving() {
-  var url = 'http://172.20.10.6/startDriving';
+  var url = 'http://172.20.10.3/startDriving';
     var command = 'drive'; // Change this to your desired command
 
     var xhttp = new XMLHttpRequest();
@@ -200,7 +200,7 @@ document.getElementById("stop").addEventListener('click',function(){
 });
 
 function stopDriving() {
-    var url = 'http://172.20.10.6/stopDriving';
+    var url = 'http://172.20.10.3/stopDriving';
     var command = 'stop'; // Change this to your desired command
 
     var xhttp = new XMLHttpRequest();
