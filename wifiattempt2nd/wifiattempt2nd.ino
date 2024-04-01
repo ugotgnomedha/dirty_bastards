@@ -79,12 +79,23 @@ void setup() {
     request->send(200, "text/plain", "Rotate command received successfully");
   });
 
+  server.on("/joystick", HTTP_POST, [](AsyncWebServerRequest * request) {
+    String x = request->arg("x");
+    String y = request->arg("y");
+
+    Serial2.println("Joystick X: " + x + ", Y: " + y);
+    // Process joystick data as needed
+    // Example: send it to Arduino Mega via Serial1
+    request->send(200, "text/plain", "Joystick data received successfully");
+  });
+
 
   // GET METHODS _____________________________________________________________
 
   server.on("/getSensorData", HTTP_GET, [](AsyncWebServerRequest * request) {
     // Read Lidar and Compass data
     Serial2.println("GET_SENSOR_DATA");
+    //delay(600); // Delay to allow time for data to be available
     String response = "";
     while (Serial2.available()) {
       char c = Serial2.read();
@@ -133,9 +144,9 @@ void loop()
 
     if (WiFi.status() == WL_CONNECTED)
     {
-      Serial2.println("WiFi is still connected. IP: " + WiFi.localIP().toString());
+      Serial.println("WiFi is still connected. IP: " + WiFi.localIP().toString());
     } else {
-      Serial2.println("WiFi is disconnected. Reconnecting...");
+      Serial.println("WiFi is disconnected. Reconnecting...");
       WiFi.reconnect();
     }
   }

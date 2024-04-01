@@ -118,27 +118,24 @@ void directionsCompass() {
   }
 }
 
-void handleJoystickData(String data) {
-  int xPercentage, yPercentage;
-  if (sscanf(data.c_str(), "Received data: X:%d,Y:%d", &xPercentage, &yPercentage) == 2) {
-    int pwm_R = 0;
-    int pwm_L = 0;
+void handleJoystickData(int xPercentage, int yPercentage) {
+  int pwm_R = 0;
+  int pwm_L = 0;
 
-    pwm_L = map(yPercentage, -100, 100, -255, 255);
-    pwm_R = map(yPercentage, -100, 100, -255, 255);
+  pwm_L = map(yPercentage, -100, 100, -255, 255);
+  pwm_R = map(yPercentage, -100, 100, -255, 255);
 
-    pwm_L += xPercentage;
-    pwm_R -= xPercentage;
+  pwm_L += xPercentage;
+  pwm_R -= xPercentage;
 
-    pwm_L = constrain(pwm_L, -255, 255);
-    pwm_R = constrain(pwm_R, -255, 255);
+  pwm_L = constrain(pwm_L, -255, 255);
+  pwm_R = constrain(pwm_R, -255, 255);
 
-    digitalWrite(Motor_L_dir_pin, (pwm_L >= 0) ? Motor_return : Motor_forward);
-    digitalWrite(Motor_R_dir_pin, (pwm_R >= 0) ? Motor_forward : Motor_return);
+  digitalWrite(Motor_L_dir_pin, (pwm_L >= 0) ? Motor_return : Motor_forward);
+  digitalWrite(Motor_R_dir_pin, (pwm_R >= 0) ? Motor_forward : Motor_return);
 
-    analogWrite(Motor_L_pwm_pin, abs(pwm_L));
-    analogWrite(Motor_R_pwm_pin, abs(pwm_R));
-  }
+  analogWrite(Motor_L_pwm_pin, abs(pwm_L));
+  analogWrite(Motor_R_pwm_pin, abs(pwm_R));
 }
 
 unsigned long previousMillis = 0;
@@ -148,11 +145,11 @@ String recognizeColor(uint16_t red, uint16_t green, uint16_t blue, uint16_t clea
 //  Serial.println("---");
 //  Serial.println(clearVal + red + green + blue);
 //
-//  Serial.println("---");
-//  Serial.println("Clear: " + String(clearVal));
-//  Serial.println("Red: " + String(red));
-//  Serial.println("Green: " + String(green));
-//  Serial.println("Blue: " + String(blue));
+  Serial.println("---");
+  Serial.println("Clear: " + String(clearVal));
+  Serial.println("Red: " + String(red));
+  Serial.println("Green: " + String(green));
+  Serial.println("Blue: " + String(blue));
   
   lcd.setCursor(0, 0);
   lcd.print("                   ");
@@ -205,27 +202,27 @@ void loop() {
     lastCompassUpdate = currentMillis;
   } 
 
+    // Lidar
+    uint16_t distance = getLidarDistance();
+    //  Serial.println("Distance: " + String(distance) + " cm");
+    lcd.setCursor(0, 2);
+    lcd.print("                   ");
+    lcd.setCursor(0, 2);
+    lcd.print("Dist. lidar: ");
+    lcd.print(distance);
+    
 
   String receivedData = readSerial2Line();
-  
-//  Serial.println(receivedData);
-  processMessage(receivedData);
 
-//  if (receivedData.length() > 2) {
-//    handleJoystickData(receivedData);
-//  }
-
-  // Lidar
-  uint16_t distance = getLidarDistance();
-//  Serial.println("Distance: " + String(distance) + " cm");
-  lcd.setCursor(0, 2);
-  lcd.print("                   ");
-  lcd.setCursor(0, 2);
-  lcd.print("Dist. lidar: ");
-  lcd.print(distance);
+  if (receivedData != "" && receivedData != " "){
+    Serial.println(receivedData);
+  //  Serial.println(receivedData);
+    processMessage(receivedData);
   
-  // Testing lidar, remove me later!
-//  moveLidarTest((int) distance);
+  //  if (receivedData.length() > 2) {
+  //    handleJoystickData(receivedData);
+  //  }
+  }
 }
 
 String readSerial2Line() {
@@ -312,7 +309,7 @@ void rotateTo(int targetBearing) {
 
 void moveCar(int distance) { // distance in cm.
   // Set the motor speeds
-  int motorSpeed = 160; // Adjust the speed as needed
+  int motorSpeed = 120; // Adjust the speed as needed
 
   if (moveForward) {
     // Move forward
@@ -417,6 +414,27 @@ void processMessage(String message) {
     
     // Call the corresponding function to handle the message
     handleLidarStopCommand(distance);
+    } else if (message.startsWith("Joystick X:")) {
+      // Handle joystick values
+      Serial.println("Joystick values received");
+      int xPosIndex = message.indexOf("X:") + 2;
+      int yPosIndex = message.indexOf("Y:") + 2;
+      
+      // Extract x and y values from the message
+      String xStr = message.substring(xPosIndex, yPosIndex - 4);
+      String yStr = message.substring(yPosIndex);
+      
+      int x = xStr.toInt();
+      int y = yStr.toInt();
+      
+      // Now you can use x and y variables for further processing
+      // Example: perform actions based on joystick position
+//      Serial.print("Joystick X: ");
+//      Serial.println(x);
+//      Serial.print("Joystick Y: ");
+//      Serial.println(y);
+      // Handle the joystick data.
+      handleJoystickData(x, y);
     } else if (message.startsWith("Compass value received:")) {
       // Handle compass value
       Serial.println("Compass value received");
@@ -429,11 +447,11 @@ void processMessage(String message) {
       
     } else if (message.startsWith("GET_SENSOR_DATA")) {
       // Get lidar value
-    uint16_t distance = getLidarDistance();
-    // Get compass value
-    int currentBearing = getCurrentBearing();
-    String output = "Lidar reading: " + String(distance) + ", Compass value: " + String(currentBearing);
-    Serial2.println(output);
+      uint16_t distance = getLidarDistance();
+      // Get compass value
+      int currentBearing = getCurrentBearing();
+      String output = "Lidar reading: " + String(distance) + ", Compass value: " + String(currentBearing);
+      Serial2.println(output);
     } else if (message.startsWith("Move distance received:")) {
       // Extract move distance from the message
       int index = message.indexOf(":") + 2;

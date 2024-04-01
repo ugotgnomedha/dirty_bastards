@@ -142,7 +142,7 @@ void handleJoystickData(String data) {
 }
 
 unsigned long previousMillis = 0;
-const long interval_color = 2000;  // Check color every N milis
+const long interval_color = 300;  // Check color every N milis
 
 String recognizeColor(uint16_t red, uint16_t green, uint16_t blue, uint16_t clearVal) {
 //  Serial.println("---");
@@ -160,13 +160,13 @@ String recognizeColor(uint16_t red, uint16_t green, uint16_t blue, uint16_t clea
 
   String color;
 
-  if (clearVal > 1000) {
+  if (clearVal > 1070) {
     lcd.println("White");
     return "White";
   }
 
   // Determine which color has the highest value
-  else if (red > green && red > blue) {
+  else if (clearVal < 1070 && red > 200 && green < 300) {
     lcd.print("Red");
     color = "Red";
   } else if (green > red && green > blue) {
@@ -179,6 +179,8 @@ String recognizeColor(uint16_t red, uint16_t green, uint16_t blue, uint16_t clea
     lcd.print("Unknown");
     color = "Unknown";
   }
+
+  Serial.println(color);
 
   return color;
 }
@@ -250,7 +252,7 @@ void moveInMaze(){
       Serial.println(detectedColor);
       if (detectedColor == "White"){
       // keep moving
-      int motorSpeed = 100;
+      int motorSpeed = 80;
   
       digitalWrite(Motor_L_dir_pin, Motor_forward);
       digitalWrite(Motor_R_dir_pin, Motor_return);
@@ -260,17 +262,17 @@ void moveInMaze(){
       } else if (detectedColor == "Red") {
         stopCar(); // Stop the car
         int currentBearing = getCurrentBearing();
-        int bearingDifference = abs(currentBearing + 10);
+        int bearingDifference = abs(currentBearing - 20);
         Serial.println(bearingDifference);
         rotateTo(bearingDifference);  // Rotate -90 degrees
       } else if (detectedColor == "Blue") {
         stopCar(); // Stop the car
         int currentBearing = getCurrentBearing();
-        int bearingDifference = abs(currentBearing - 10);
+        int bearingDifference = abs(currentBearing + 20);
         Serial.println(bearingDifference);
         rotateTo(bearingDifference);  // Rotate 90 degrees
       } else {
-        // Unknown color - stop moving
+        // Unknown or green color - stop moving
         stopCar();
       }
   }

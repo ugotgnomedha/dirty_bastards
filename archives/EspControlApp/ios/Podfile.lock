@@ -698,7 +698,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 8baadae51f01d867c3921213a25ab78ab4fbcd91
   React-logger: 8edc785c47c8686c7962199a307015e2ce9a0e4f
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
-  react-native-slider: 5e939192a5e988bb378e1a860ff12572f3d70078
+  react-native-slider: 1cdd6ba29675df21f30544253bf7351d3c2d68c4
   React-NativeModulesApple: b6868ee904013a7923128892ee4a032498a1024a
   React-perflogger: 31ea61077185eb1428baf60c0db6e2886f141a5a
   React-RCTActionSheet: 392090a3abc8992eb269ef0eaa561750588fc39d
@@ -722,4 +722,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f35c2716701b5e90777b29e091602e90a3702ebd
 
-COCOAPODS: 1.15.1
+COCOAPODS: 1.15.2
