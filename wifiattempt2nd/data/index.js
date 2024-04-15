@@ -1,11 +1,14 @@
+const endpoint = 'http://10.5.1.82';
+
 
 document.getElementById('sendMoveDistance').addEventListener('click', function() {
   var move = document.getElementById("moveValue").value; // Use value instead of innerHTML for input element
   sendMoveDistance(move);
 });
 
+
 function sendMoveDistance(move) {
-  var url = 'http://172.20.10.3/sendMoveDistance';
+  var url = endpoint + '/sendMoveDistance';
   var data = 'move=' + move;
   url = url+'?'+data;
 
@@ -39,7 +42,7 @@ document.getElementById('sendLidar').addEventListener('click', function() {
 // THIS WORKS ______________________________________ ->
 
 function sendLidarDistance(distance) {
-  var url = 'http://172.20.10.3/sendLidarDistance';
+  var url = endpoint + '/sendLidarDistance';
   var data = 'distance=' + distance;
   url = url+'?'+data;
 
@@ -75,12 +78,12 @@ function sendLidarDistance(distance) {
   });
 
 
-// SHOULD WORK____________________________--->
+// WORKS ____________________________--->
 
 // Function to send rotation value to Arduino
 function sendCompassValue(degrees) {
 
-  var url = 'http://172.20.10.3/sendCompassValue';
+  var url = endpoint + '/sendCompassValue';
   var data = 'degrees=' + degrees;
   url = url+'?'+data;
 
@@ -107,18 +110,23 @@ function sendCompassValue(degrees) {
   //   pin.style.transform = `translateX(-50%) rotate(${degrees}deg)`;
 }
 
-// __________________________________SHOULD WORK
+// __________________________________ WORKS
 
 
 
 // GET - METHODS ___________________________________________________________________________
+// This is currently fetching as text, would be better as a json to extract the values but this works
+// also, the only problem is sometimes flooding the serial2 and glitching the website.
 
-setInterval(getSensorData, 2000);
 
+
+document.getElementById('get-read').addEventListener('click', function() {
+  getSensorData();
+});
 // Function to retrieve current LIDAR distance and COMPASS degrees from Arduino
 
 function getSensorData() {
-  var url = 'http://172.20.10.3/getSensorData';
+  var url = endpoint + '/getSensorData';
 
   var xhttp = new XMLHttpRequest();
 
@@ -128,7 +136,7 @@ function getSensorData() {
     if (xhttp.status == 200) {
       var response = this.response;
 
-      document.getElementById('sensor_reading').innerText = response;
+      document.getElementById('readings-text').innerText = response;
 
       let str = response;
       let regex = /\d+/g;
@@ -141,6 +149,8 @@ function getSensorData() {
 
         console.log("Lidar reading:", centimeters);
         console.log("Compass value:", degrees);
+
+
 
         // Update UI elements based on the extracted integer values
         const pin = document.getElementById('pin');
@@ -170,7 +180,7 @@ document.getElementById("drive").addEventListener('click',function(){
 });
 
 function startDriving() {
-  var url = 'http://172.20.10.3/startDriving';
+  var url = endpoint + '/startDriving';
     var command = 'drive'; // Change this to your desired command
 
     var xhttp = new XMLHttpRequest();
@@ -200,7 +210,7 @@ document.getElementById("stop").addEventListener('click',function(){
 });
 
 function stopDriving() {
-    var url = 'http://172.20.10.3/stopDriving';
+    var url = endpoint + '/stopDriving';
     var command = 'stop'; // Change this to your desired command
 
     var xhttp = new XMLHttpRequest();
@@ -222,4 +232,63 @@ function stopDriving() {
 
     // Send the command to Arduino
     xhttp.send('command=' + command);
+}
+
+// setInterval(getAccelerationData,500);
+
+// function getAccelerationData() {
+//   var url = endpoint + '/getAccelerationData';
+
+//   var xhttp = new XMLHttpRequest();
+
+//   xhttp.open('GET', url, true);
+
+//   xhttp.onload = function() {
+//     if (xhttp.status == 200) {
+//       var response = this.response;
+//       document.getElementById('acc_reading').innerText = response;
+
+//      } else {
+//       console.error('Error:', xhttp.statusText);
+//     }
+//   };
+
+//   xhttp.onerror = function() {
+//     console.error('Network error');
+//   };
+
+//   xhttp.send();
+
+// }
+
+document.getElementById('get-pulses').addEventListener('click', function() {
+  getPulseData();
+});
+// Function to retrieve current LIDAR distance and COMPASS degrees from Arduino
+
+function getPulseData() {
+  var url = endpoint + '/getPulses';
+
+  var xhttp = new XMLHttpRequest();
+
+  xhttp.open('GET', url, true);
+
+  xhttp.onload = function() {
+    if (xhttp.status == 200) {
+      var response = this.response;
+
+      document.getElementById('pulses-text').innerText = response;
+      console.log(response);
+
+    } else {
+      console.error('Error:', xhttp.statusText);
+    }
+  };
+
+  xhttp.onerror = function() {
+    console.error('Network error');
+  };
+
+  xhttp.send();
+
 }

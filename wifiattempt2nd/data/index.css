@@ -9,10 +9,18 @@ body {
 }
 
 h1 {
-  color: #333;
+  color: black;
 }
 
-.textbox3, .textbox2, .textbox1  {
+.textbox1 {
+  margin: 20px;
+  width: auto;
+  padding-top: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.textbox3, .textbox2  {
   margin: 20px;
   width: auto;
   padding-top: 40px;
@@ -32,7 +40,8 @@ button {
   margin-top: 10px;
   background-color: #0074D9;
   color: #FFF;
-  border: none;
+  border: 1px solid #000;
+  border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
 }
@@ -53,7 +62,7 @@ button {
   position: relative;
   overflow: hidden;
   transform: translateX(15%);
-
+  border: 1px solid #000;
 }
 
 #lidarFill {
@@ -119,5 +128,26 @@ button {
 .east { right: 0; }
 .west { left: 0; transform: translateX(-50%); }
 .south { bottom: 0; left: 50%; transform: translateX(-50%); }
+
+#color-box {
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  border: 2px solid #000;
+  margin-left: 180px;
+}
+
+.driveandstop-buttons {
+  padding-bottom: 40px;
+}
+
+.accbox {
+  padding-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  padding-left: 25%;
+}
 
 

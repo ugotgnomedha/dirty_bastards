@@ -5,8 +5,8 @@
 #define ESP32_TX 17
 #define ESP32_RX 16
 
-const char* ssid = "iPhone_";
-const char* password = "gagarin11";
+const char* ssid = "SOURCE";
+const char* password = "Pelle!23";
 
 AsyncWebServer server(80);
 
@@ -108,6 +108,38 @@ void setup() {
     request->send(200, "text/plain", response);
   });
 
+    server.on("/getPulses", HTTP_GET, [](AsyncWebServerRequest * request) {
+    // GET PULSES
+    Serial2.println("GET_PULSES");
+    //delay(600); // Delay to allow time for data to be available
+    String response = "";
+    while (Serial2.available()) {
+      char c = Serial2.read();
+      response += c;
+
+    }
+
+    Serial.println("Response from Arduino Mega: " + response);
+
+    request->send(200, "text/plain", response);
+  });
+
+
+    server.on("/getAccelerationData", HTTP_GET, [](AsyncWebServerRequest * request) {
+    // Read Lidar and Compass data
+    Serial2.println("ACCELERATION_DATA");
+    //delay(600); // Delay to allow time for data to be available
+    String response = "";
+    while (Serial2.available()) {
+      char c = Serial2.read();
+      response += c;
+
+    }
+
+    Serial.println("Response from Arduino Mega: " + response);
+
+    request->send(200, "text/plain", response);
+  });
 
   // START AND STOP
 

@@ -27,16 +27,28 @@
         <div>
             <span class="sensor-labels"></span>
             <span id="sensor_reading"></span>
-        <sup class="units"></sup>
+            <sup class="units"></sup>
+    </div>
+    <div id="color-box"></div>
+    </div>
+    <div class="textbox4">
+        <label for="readings">Readings:</label>
+        <button id="readings-text"></button>
+        <button id="get-read">Get Readings</button>
+    </div>
+    <div class="textbox5">
+        <label for="pulses">Distance per pulses:</label>
+        <button id="pulses-text"></button>
+        <button id="get-pulses">Get Pulses</button>
     </div>
     </div>
-    <div class="textbox1">
+    <div class="textbox2">
         <label for="lidarDistance">LIDAR Stop Distance:</label>
         <input type="text" id="lidarDistance">
         <button id="sendLidar">Send Lidar Distance</button>
     </div>
     <div class="textbox2">
-        <label for="compassValue">Compass Value:</label>
+        <label for="compassValue">Rotate to Value:</label>
         <input type="text" id="compassValue">
         <button id="sendCompass">Send Compass Value</button>
     </div>
@@ -46,14 +58,27 @@
         <button id="sendMoveDistance">Send Move Distance</button>
     </div>
 <br/>
-<div>
+<div class="driveandstop-buttons">
     <div>
         <button id="drive"> DRIVE </button>
     </div>
     <div>
         <button id="stop"> STOP </button>
     </div>
+    <!-- <div class="accbox">
+        <br>
+
+        <span>Accelerometer LIS2GH:
+
+            We are measuring the acceleration values for 3 different axis, x, y and z.
+            By using the same SCA and SCL ports as with the RGB we can read the values of the accelerometer
+            We want to measure/display the way the car is moving or if its in freefall of a cliff or launched into air:D</span>
+        </div>
 </div>
+<span id="acc_reading"></span> -->
+
+
+
 
 <script src="index.js"></script>
 </body>
