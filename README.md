@@ -1,5 +1,7 @@
 # dirty_bastards
-Dirsty idiots
+An embedded systems project building a lego car with an effective hands-on exploration of Arduino, ESP, and various sensors such as magnetometer, LiDAR, color sensor, and accelerometer, gaining a comprehensive understanding of their functionalities and applications. From detecting obstacles to determining colors and reacting dynamically.
+
+https://docs.google.com/presentation/d/1RhfFzAAATkHuqyZ8t_kdqUK0Z9udn4Z12-N6eWhisjA/edit?usp=sharing
 
 ## ESP commands:
 ### Move forward/backward:
